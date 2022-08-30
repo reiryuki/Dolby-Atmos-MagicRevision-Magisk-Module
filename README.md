@@ -5,9 +5,12 @@
 - The MIT license specified here is for the Magisk Module, not for Dolby apps and blobs.
 
 ## Descriptions
-- Dolby Surround soundfx equalizer ported Little Monk reworked and integrated as a Magisk Module for all supported and rooted devices with Magisk
+- Dolby Surround soundfx equalizer ported and integrated as a Magisk Module for all supported and rooted devices with Magisk
 - Global type soundfx
-- Source: https://gitlab.com/magisk-module/dolby-atmos-magic-revision-magisk-module/-/blob/main/module.prop
+
+## Sources
+- Dolby Magic Revision MD2 Magisk Module by Little Monk
+- com.atmos classes: apkmirror.com com.dolby DAX1-1.9.3_r1 1
 
 ## Screenshots
 - https://t.me/androidryukimods/227

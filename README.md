@@ -13,11 +13,11 @@
 - com.atmos classes: apkmirror.com com.dolby DAX1-1.9.3_r1 1
 
 ## Screenshots
-- https://t.me/androidryukimods/227
+- https://t.me/androidryukimodsdiscussions/78576
 
 ## Requirements
 - Android 4.2 and up
-- Magisk Installed
+- Magisk installed
 
 ## Installation Guide & Download Link
 - Install this module https://www.pling.com/p/1610004/ via Magisk Manager or Recovery

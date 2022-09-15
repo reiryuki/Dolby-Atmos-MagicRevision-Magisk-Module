@@ -378,6 +378,11 @@ if echo "$PROP" | grep -Eq a; then
   sed -i 's/#a//g' $FILE
   ui_print " "
 fi
+if echo "$PROP" | grep -Eq s; then
+  ui_print "- Activating system stream..."
+  sed -i 's/#s//g' $FILE
+  ui_print " "
+fi
 if echo "$PROP" | grep -Eq v; then
   ui_print "- Activating voice_call stream..."
   sed -i 's/#v//g' $FILE

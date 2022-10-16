@@ -32,11 +32,15 @@ else
   ui_print " "
 fi
 
-# sepolicy.rule
+# mount
 if [ "$BOOTMODE" != true ]; then
+  mount -o rw -t auto /dev/block/bootdevice/by-name/cust /vendor
+  mount -o rw -t auto /dev/block/bootdevice/by-name/vendor /vendor
   mount -o rw -t auto /dev/block/bootdevice/by-name/persist /persist
   mount -o rw -t auto /dev/block/bootdevice/by-name/metadata /metadata
 fi
+
+# sepolicy.rule
 FILE=$MODPATH/sepolicy.sh
 DES=$MODPATH/sepolicy.rule
 if [ -f $FILE ] && [ "`grep_prop sepolicy.sh $OPTIONALS`" != 1 ]; then
@@ -446,9 +450,5 @@ for DIRS in $DIR; do
   chown 0.2000 $DIRS
 done
 ui_print " "
-
-
-
-
 
 

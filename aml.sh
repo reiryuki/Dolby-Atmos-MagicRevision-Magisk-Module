@@ -8,7 +8,7 @@ else
 fi
 
 # destination
-DIR=$MAGISKTMP/mirror/vendor/lib/soundfx
+DIR=$MAGISKTMP/mirror/system/vendor/lib/soundfx
 if [ -d $DIR ]; then
   LIBPATH="\/vendor\/lib\/soundfx"
 else
@@ -36,12 +36,14 @@ for RMVS in $RMV; do
   sed -i "s/\"$RMVS\"/\"removed\"/g" $MODAEX
 done
 sed -i 's/<library name="removed" path="removed"\/>//g' $MODAEX
+sed -i 's/<library name="proxy" path="removed"\/>//g' $MODAEX
 sed -i 's/<effect name="removed" library="removed" uuid="removed"\/>//g' $MODAEX
 sed -i 's/<effect name="removed" uuid="removed" library="removed"\/>//g' $MODAEX
 sed -i 's/<libsw library="removed" uuid="removed"\/>//g' $MODAEX
 sed -i 's/<libhw library="removed" uuid="removed"\/>//g' $MODAEX
 sed -i 's/<apply effect="removed"\/>//g' $MODAEX
 sed -i 's/<library name="removed" path="removed" \/>//g' $MODAEX
+sed -i 's/<library name="proxy" path="removed" \/>//g' $MODAEX
 sed -i 's/<effect name="removed" library="removed" uuid="removed" \/>//g' $MODAEX
 sed -i 's/<effect name="removed" uuid="removed" library="removed" \/>//g' $MODAEX
 sed -i 's/<libsw library="removed" uuid="removed" \/>//g' $MODAEX
@@ -108,7 +110,8 @@ if [ "$MODAEX" ]; then
     sed -i "s/<apply effect=\"$RMVS\"\/>//g" $MODAEX
     sed -i "s/<apply effect=\"$RMVS\" \/>//g" $MODAEX
   done
-  if ! grep -Eq '<postprocess>' $MODAEX || grep -Eq '<!-- Audio post processor' $MODAEX; then
+  if ! grep -Eq '<postprocess>' $MODAEX\
+  || grep -Eq '<!-- Audio post processor' $MODAEX; then
     sed -i '/<\/effects>/a\
     <postprocess>\
         <stream type="music">\
@@ -125,7 +128,9 @@ if [ "$MODAEX" ]; then
         <\/stream>\
     <\/postprocess>' $MODAEX
   else
-    if ! grep -Eq '<stream type="notification">' $MODAEX || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX; then
+    if ! grep -Eq '<stream type="notification">' $MODAEX\
+    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"notification\">\n        <\/stream>" $MODAEX
     fi
     if ! grep -Eq '<stream type="voice_call">' $MODAEX; then
@@ -134,13 +139,19 @@ if [ "$MODAEX" ]; then
     if ! grep -Eq '<stream type="system">' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"system\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="alarm">' $MODAEX || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX; then
+    if ! grep -Eq '<stream type="alarm">' $MODAEX\
+    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"alarm\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="ring">' $MODAEX || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX; then
+    if ! grep -Eq '<stream type="ring">' $MODAEX\
+    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"ring\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="music">' $MODAEX || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX; then
+    if ! grep -Eq '<stream type="music">' $MODAEX\
+    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"music\">\n        <\/stream>" $MODAEX
     fi
   fi
@@ -148,9 +159,11 @@ fi
 
 # dirac
 #2RMV="libdiraceffect.so dirac_gef 3799D6D1-22C5-43C3-B3EC-D664CF8D2F0D
-#2      libdirac.so dirac_controller b437f4de-da28-449b-9673-667f8b9643fe
-#2      dirac_music b437f4de-da28-449b-9673-667f8b964304
-#2      dirac e069d9e0-8329-11df-9168-0002a5d5c51b"
+#2     dirac_afm 743539F8-1076-451F-8395-84ACFAB0FAC7
+#2     dirac_controller 128B9BA2-D0C9-47C6-AFF3-9F761CD0E228
+#2     libdirac.so b437f4de-da28-449b-9673-667f8b9643fe
+#2     dirac_music b437f4de-da28-449b-9673-667f8b964304
+#2     dirac e069d9e0-8329-11df-9168-0002a5d5c51b"
 #2if [ "$MODAEC" ]; then
 #2  remove_conf
 #2fi
@@ -205,8 +218,5 @@ fi
 #u  sed -i 's/RAW/NONE/g' $MODAP
 #u  sed -i 's/,raw//g' $MODAP
 #ufi
-
-
-
 
 

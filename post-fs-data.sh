@@ -58,9 +58,9 @@ NAME2="*audio*effects*.conf -o -name *audio*effects*.xml"
 NAME3="*policy*.conf -o -name *policy*.xml"
 rm -f `find $MODPATH/system -type f -name $NAME`
 AE=`find $ETC -maxdepth 1 -type f -name $NAME2`
-VAE=`find $VETC -maxdepth 1 -type f -name $NAME2`
+VAE=`find $VETC /odm/etc /my_product/etc -maxdepth 1 -type f -name $NAME2`
 AP=`find $ETC -maxdepth 1 -type f -name $NAME3`
-VAP=`find $VETC -maxdepth 1 -type f -name $NAME3`
+VAP=`find $VETC /odm/etc /my_product/etc -maxdepth 1 -type f -name $NAME3`
 VOA=`find $VOETC -maxdepth 1 -type f -name $NAME`
 VAA=`find $VETC/audio -maxdepth 1 -type f -name $NAME`
 VBA=`find $VETC/audio/"$PROP" -maxdepth 1 -type f -name $NAME`

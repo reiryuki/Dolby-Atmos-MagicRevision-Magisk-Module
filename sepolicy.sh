@@ -40,6 +40,8 @@ magiskpolicy --live "dontaudit { hal_audio_default mtk_hal_audio audioserver } v
 magiskpolicy --live "allow     { hal_audio_default mtk_hal_audio audioserver } vendor_default_prop file { read open }"
 magiskpolicy --live "dontaudit { hal_audio_default mtk_hal_audio audioserver } { sysfs_net sysfs } dir read"
 magiskpolicy --live "allow     { hal_audio_default mtk_hal_audio audioserver } { sysfs_net sysfs } dir read"
+magiskpolicy --live "dontaudit { hal_audio_default mtk_hal_audio audioserver } sysfs dir open"
+magiskpolicy --live "allow     { hal_audio_default mtk_hal_audio audioserver } sysfs dir open"
 magiskpolicy --live "dontaudit { hal_audio_default mtk_hal_audio audioserver } logd_socket sock_file write"
 magiskpolicy --live "allow     { hal_audio_default mtk_hal_audio audioserver } logd_socket sock_file write"
 magiskpolicy --live "dontaudit { hal_audio_default mtk_hal_audio audioserver } logd unix_stream_socket connectto"

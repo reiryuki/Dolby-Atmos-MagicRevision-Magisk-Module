@@ -19,15 +19,17 @@ if [ -d $DIR ] && [ ! -f $AML/disable ] && [ "$API" -ge 26 ]; then
 fi
 
 # mount
-NAME="*audio*effects*.conf -o -name *audio*effects*.xml"
-#pNAME="*audio*effects*.conf -o -name *audio*effects*.xml -o -name *policy*.conf -o -name *policy*.xml"
-if [ ! -d $AML ] || [ -f $AML/disable ]; then
-  DIR=$MODPATH/system/vendor
-else
+NAME="*audio*effects*.conf -o -name *audio*effects*.xml -o -name *policy*.conf -o -name *policy*.xml"
+if [ -d $AML ] && [ ! -f $AML/disable ]\
+&& find $AML/system/vendor -type f -name $NAME; then
+  NAME="*audio*effects*.conf -o -name *audio*effects*.xml"
+#p  NAME="*audio*effects*.conf -o -name *audio*effects*.xml -o -name *policy*.conf -o -name *policy*.xml"
   DIR=$AML/system/vendor
+else
+  DIR=$MODPATH/system/vendor
 fi
 FILE=`find $DIR/etc -maxdepth 1 -type f -name $NAME`
-if [ `realpath /odm/etc` == /odm/etc ] && [ "$FILE" ]; then
+if [ "`realpath /odm/etc`" == /odm/etc ] && [ "$FILE" ]; then
   for i in $FILE; do
     j="/odm$(echo $i | sed "s|$DIR||")"
     if [ -f $j ]; then
@@ -48,9 +50,15 @@ fi
 
 # restart
 if [ "$API" -ge 24 ]; then
-  killall audioserver
+  PID=`pidof audioserver`
+  if [ "$PID" ]; then
+    killall audioserver
+  fi
 else
-  killall mediaserver
+  PID=`pidof mediaserver`
+  if [ "$PID" ]; then
+    killall mediaserver
+  fi
 fi
 
 # wait

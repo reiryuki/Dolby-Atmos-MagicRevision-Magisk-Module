@@ -4,12 +4,14 @@ MODPATH=${0%/*}
 if [ -d /sbin/.magisk ]; then
   MAGISKTMP=/sbin/.magisk
 else
-  MAGISKTMP=`find /dev -mindepth 2 -maxdepth 2 -type d -name .magisk`
+  MAGISKTMP=`realpath /dev/*/.magisk`
 fi
 
+# path
+VENDOR=`realpath $MAGISKTMP/mirror/vendor`
+
 # destination
-DIR=$MAGISKTMP/mirror/system/vendor/lib/soundfx
-if [ -d $DIR ]; then
+if [ -d $VENDOR/lib/soundfx ]; then
   LIBPATH="\/vendor\/lib\/soundfx"
 else
   LIBPATH="\/system\/lib\/soundfx"

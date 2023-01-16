@@ -1,0 +1,58 @@
+# debug
+dontaudit system_server system_file file write
+allow     system_server system_file file write
+
+# context
+type vendor_file
+type vendor_configs_file
+dontaudit { vendor_file vendor_configs_file } labeledfs filesystem associate
+allow     { vendor_file vendor_configs_file } labeledfs filesystem associate
+dontaudit init { vendor_file vendor_configs_file } dir relabelfrom
+allow     init { vendor_file vendor_configs_file } dir relabelfrom
+dontaudit init { vendor_file vendor_configs_file } file relabelfrom
+allow     init { vendor_file vendor_configs_file } file relabelfrom
+
+# sock_file
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } property_socket sock_file write
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } property_socket sock_file write
+
+# unix_stream_socket
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } init unix_stream_socket connectto
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } init unix_stream_socket connectto
+
+# property_service
+dontaudit { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { default_prop dolby_prop } property_service set
+allow     { system_app priv_app platform_app untrusted_app_29 untrusted_app_27 untrusted_app } { default_prop dolby_prop } property_service set
+
+# additional
+allow { hal_audio_default mtk_hal_audio audioserver } system_suspend_hwservice hwservice_manager find
+dontaudit { hal_audio_default mtk_hal_audio audioserver } { default_prop boottime_prop } file { read open getattr map }
+allow     { hal_audio_default mtk_hal_audio audioserver } { default_prop boottime_prop } file { read open getattr map }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } { mnt_vendor_file system_prop } file { read open getattr }
+allow     { hal_audio_default mtk_hal_audio audioserver } { mnt_vendor_file system_prop } file { read open getattr }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } audio_prop file { read open getattr }
+allow     { hal_audio_default mtk_hal_audio audioserver } audio_prop file { read open getattr }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } radio_prop file read
+allow     { hal_audio_default mtk_hal_audio audioserver } radio_prop file read
+dontaudit { hal_audio_default mtk_hal_audio audioserver } sysfs_wake_lock file { write open }
+allow     { hal_audio_default mtk_hal_audio audioserver } sysfs_wake_lock file { write open }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } vendor_default_prop file { read open }
+allow     { hal_audio_default mtk_hal_audio audioserver } vendor_default_prop file { read open }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } { sysfs_net sysfs } dir { read open }
+allow     { hal_audio_default mtk_hal_audio audioserver } { sysfs_net sysfs } dir { read open }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } logd_socket sock_file write
+allow     { hal_audio_default mtk_hal_audio audioserver } logd_socket sock_file write
+dontaudit { hal_audio_default mtk_hal_audio audioserver } logd unix_stream_socket connectto
+allow     { hal_audio_default mtk_hal_audio audioserver } logd unix_stream_socket connectto
+dontaudit { hal_audio_default mtk_hal_audio audioserver } { diag_device vendor_diag_device } chr_file { read write open ioctl getattr }
+allow     { hal_audio_default mtk_hal_audio audioserver } { diag_device vendor_diag_device } chr_file { read write open ioctl getattr }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } device chr_file { read write }
+allow     { hal_audio_default mtk_hal_audio audioserver } device chr_file { read write }
+dontaudit hal_audio_default hal_audio_default capability2 block_suspend
+allow     hal_audio_default hal_audio_default capability2 block_suspend
+dontaudit mtk_hal_audio mtk_hal_audio capability2 block_suspend
+allow     mtk_hal_audio mtk_hal_audio capability2 block_suspend
+dontaudit audioserver audioserver capability2 block_suspend
+allow     audioserver audioserver capability2 block_suspend
+
+

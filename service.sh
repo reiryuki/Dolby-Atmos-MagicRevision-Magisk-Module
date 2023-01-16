@@ -9,12 +9,24 @@ set -x
 # property
 resetprop dolby.monospeaker false
 
+# restart
+if [ "$API" -ge 24 ]; then
+  SVC=audioserver
+else
+  SVC=mediaserver
+fi
+PID=`pidof $SVC`
+if [ "$PID" ]; then
+  killall $SVC
+fi
+
 # wait
 sleep 20
 
 # aml fix
 DIR=$AML/system/vendor/odm/etc
-if [ -d $DIR ] && [ ! -f $AML/disable ] && [ "$API" -ge 26 ]; then
+if [ "$API" -ge 26 ]\
+&& [ -d $DIR ] && [ ! -f $AML/disable ]; then
   chcon -R u:object_r:vendor_configs_file:s0 $DIR
 fi
 
@@ -64,19 +76,6 @@ if [ ! -d $MY_PRODUCT ] && [ -d /my_product/etc ]\
   done
 fi
 
-# restart
-if [ "$API" -ge 24 ]; then
-  PID=`pidof audioserver`
-  if [ "$PID" ]; then
-    killall audioserver
-  fi
-else
-  PID=`pidof mediaserver`
-  if [ "$PID" ]; then
-    killall mediaserver
-  fi
-fi
-
 # wait
 sleep 40
 
@@ -85,5 +84,34 @@ PKG=com.atmos
 if [ "$API" -ge 30 ]; then
   appops set $PKG AUTO_REVOKE_PERMISSIONS_IF_UNUSED ignore
 fi
+
+# function
+wait_audioserver() {
+PID=`pidof $SVC`
+sleep 180
+NEXTPID=`pidof $SVC`
+}
+
+# wait
+if [ "$API" -ge 24 ]; then
+  SVC=audioserver
+else
+  SVC=mediaserver
+fi
+if [ "`getprop init.svc.$SVC`" == running ]; then
+  until [ "$PID" ] && [ "$NEXTPID" ]\
+  && [ "$PID" == "$NEXTPID" ]; do
+    wait_audioserver
+  done
+else
+  start $SVC
+fi
+
+# restart
+killall com.atmos
+
+
+
+
 
 

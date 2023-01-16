@@ -4,7 +4,7 @@ for APPS in $APP; do
   rm -f `find /data/system/package_cache -type f -name *$APPS*`
   rm -f `find /data/dalvik-cache /data/resource-cache -type f -name *$APPS*.apk`
 done
-PKG=com.atmos
+PKG=`cat $MODPATH/package.txt`
 for PKGS in $PKG; do
   rm -rf /data/user/*/$PKGS/cache/*
 done

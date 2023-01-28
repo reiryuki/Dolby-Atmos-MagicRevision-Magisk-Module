@@ -14,7 +14,7 @@ for APPS in $APP; do
 done
 PKG=`cat $MODPATH/package.txt`
 for PKGS in $PKG; do
-  rm -rf /data/user/*/$PKGS
+  rm -rf /data/user*/*/$PKGS
 done
 rm -rf /metadata/magisk/"$MODID"
 rm -rf /mnt/vendor/persist/magisk/"$MODID"

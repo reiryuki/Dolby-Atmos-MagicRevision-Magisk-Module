@@ -6,7 +6,7 @@ for APPS in $APP; do
 done
 PKG=`cat $MODPATH/package.txt`
 for PKGS in $PKG; do
-  rm -rf /data/user/*/$PKGS/cache/*
+  rm -rf /data/user*/*/$PKGS/cache/*
 done
 
 

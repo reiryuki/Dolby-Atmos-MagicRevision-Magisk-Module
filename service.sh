@@ -19,6 +19,7 @@ PID=`pidof $SVC`
 if [ "$PID" ]; then
   killall $SVC
 fi
+killall android.hardware.sensors@1.0-service
 
 # wait
 sleep 20

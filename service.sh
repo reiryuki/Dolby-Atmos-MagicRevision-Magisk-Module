@@ -125,6 +125,7 @@ else
   SVC=mediaserver
 fi
 PROC=com.atmos
+killall $PROC
 check_audioserver
 
 

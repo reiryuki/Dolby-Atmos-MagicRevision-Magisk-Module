@@ -11,13 +11,13 @@ resetprop dolby.monospeaker false
 
 # restart
 if [ "$API" -ge 24 ]; then
-  SVC=audioserver
+  SERVER=audioserver
 else
-  SVC=mediaserver
+  SERVER=mediaserver
 fi
-PID=`pidof $SVC`
+PID=`pidof $SERVER`
 if [ "$PID" ]; then
-  killall $SVC
+  killall $SERVER
 fi
 killall android.hardware.sensors@1.0-service
 
@@ -55,24 +55,24 @@ if [ -d $AML ] && [ ! -f $AML/disable ]\
 else
   DIR=$MODPATH/system/vendor
 fi
-FILE=`find $DIR/etc -maxdepth 1 -type f -name $NAME`
+FILES=`find $DIR/etc -maxdepth 1 -type f -name $NAME`
 if [ ! -d $ODM ] && [ "`realpath /odm/etc`" == /odm/etc ]\
-&& [ "$FILE" ]; then
-  for i in $FILE; do
-    j="/odm$(echo $i | sed "s|$DIR||")"
-    if [ -f $j ]; then
-      umount $j
-      mount -o bind $i $j
+&& [ "$FILES" ]; then
+  for FILE in $FILES; do
+    DES="/odm$(echo $FILE | sed "s|$DIR||")"
+    if [ -f $DES ]; then
+      umount $DES
+      mount -o bind $FILE $DES
     fi
   done
 fi
 if [ ! -d $MY_PRODUCT ] && [ -d /my_product/etc ]\
-&& [ "$FILE" ]; then
-  for i in $FILE; do
-    j="/my_product$(echo $i | sed "s|$DIR||")"
-    if [ -f $j ]; then
-      umount $j
-      mount -o bind $i $j
+&& [ "$FILES" ]; then
+  for FILE in $FILES; do
+    DES="/my_product$(echo $FILE | sed "s|$DIR||")"
+    if [ -f $DES ]; then
+      umount $DES
+      mount -o bind $FILE $DES
     fi
   done
 fi
@@ -101,29 +101,24 @@ check_audioserver() {
 if [ "$NEXTPID" ]; then
   PID=$NEXTPID
 else
-  PID=`pidof $SVC`
+  PID=`pidof $SERVER`
 fi
 sleep 10
 stop_log
-NEXTPID=`pidof $SVC`
-if [ "`getprop init.svc.$SVC`" != stopped ]; then
+NEXTPID=`pidof $SERVER`
+if [ "`getprop init.svc.$SERVER`" != stopped ]; then
   until [ "$PID" != "$NEXTPID" ]; do
     check_audioserver
   done
   killall $PROC
   check_audioserver
 else
-  start $SVC
+  start $SERVER
   check_audioserver
 fi
 }
 
 # check
-if [ "$API" -ge 24 ]; then
-  SVC=audioserver
-else
-  SVC=mediaserver
-fi
 PROC=com.atmos
 killall $PROC
 check_audioserver

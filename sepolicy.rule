@@ -30,8 +30,8 @@ dontaudit { hal_audio_default mtk_hal_audio audioserver } { default_prop boottim
 allow     { hal_audio_default mtk_hal_audio audioserver } { default_prop boottime_prop } file { read open getattr map }
 dontaudit { hal_audio_default mtk_hal_audio audioserver } { mnt_vendor_file system_prop } file { read open getattr }
 allow     { hal_audio_default mtk_hal_audio audioserver } { mnt_vendor_file system_prop } file { read open getattr }
-dontaudit { hal_audio_default mtk_hal_audio audioserver } audio_prop file { read open getattr }
-allow     { hal_audio_default mtk_hal_audio audioserver } audio_prop file { read open getattr }
+dontaudit { hal_audio_default mtk_hal_audio audioserver } audio_prop file { read open getattr map }
+allow     { hal_audio_default mtk_hal_audio audioserver } audio_prop file { read open getattr map }
 dontaudit { hal_audio_default mtk_hal_audio audioserver } radio_prop file read
 allow     { hal_audio_default mtk_hal_audio audioserver } radio_prop file read
 dontaudit { hal_audio_default mtk_hal_audio audioserver } sysfs_wake_lock file { write open }

@@ -17,12 +17,13 @@
 
 ## Requirements
 - Android 4.2 and up
-- Magisk installed
+- Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
-- Install this module https://www.pling.com/p/1610004/ via Magisk Manager or Recovery
+- Install this module https://www.pling.com/p/1610004/ via Magisk app or KernelSU app or Recovery (unless you are using KernelSU)
 - Install AML Magisk Module https://t.me/androidryukimodsdiscussions/29836 only if using any other audio mod module
 - Reboot
+- If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt and reboot after
 
 ## Optionals
 - https://t.me/androidryukimodsdiscussions/60861

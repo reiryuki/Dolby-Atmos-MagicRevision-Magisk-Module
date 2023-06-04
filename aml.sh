@@ -1,75 +1,69 @@
-MODPATH=${0%/*}
-
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`realpath /dev/*/.magisk`
-fi
-
-# path
-VENDOR=`realpath $MAGISKTMP/mirror/vendor`
+[ -z $MODPATH ] && MODPATH=${0%/*}
+[ -z $API ] && API=`getprop ro.build.version.sdk`
 
 # destination
-if [ -d $VENDOR/lib/soundfx ]; then
+if [ "$API" -ge 26 ]; then
   LIBPATH="\/vendor\/lib\/soundfx"
 else
   LIBPATH="\/system\/lib\/soundfx"
 fi
-MODAEC=`find $MODPATH/system -type f -name *audio*effects*.conf`
-MODAEX=`find $MODPATH/system -type f -name *audio*effects*.xml`
-MODAP=`find $MODPATH/system -type f -name *policy*.conf -o -name *policy*.xml`
+MODAEC=`find $MODPATH -type f -name *audio*effects*.conf`
+MODAEX=`find $MODPATH -type f -name *audio*effects*.xml`
+MODAP=`find $MODPATH -type f -name *policy*.conf -o -name *policy*.xml`
 
 # function
 remove_conf() {
-for RMVS in $RMV; do
-  sed -i "s/$RMVS/removed/g" $MODAEC
+for RMV in $RMVS; do
+  sed -i "s|$RMV|removed|g" $MODAEC
 done
-sed -i 's/path \/vendor\/lib\/soundfx\/removed//g' $MODAEC
-sed -i 's/path \/system\/lib\/soundfx\/removed//g' $MODAEC
-sed -i 's/path \/vendor\/lib\/removed//g' $MODAEC
-sed -i 's/path \/system\/lib\/removed//g' $MODAEC
-sed -i 's/library removed//g' $MODAEC
-sed -i 's/uuid removed//g' $MODAEC
+sed -i 's|path /vendor/lib/soundfx/removed||g' $MODAEC
+sed -i 's|path /system/lib/soundfx/removed||g' $MODAEC
+sed -i 's|path /vendor/lib/removed||g' $MODAEC
+sed -i 's|path /system/lib/removed||g' $MODAEC
+sed -i 's|library removed||g' $MODAEC
+sed -i 's|uuid removed||g' $MODAEC
 sed -i "/^        removed {/ {;N s/        removed {\n        }//}" $MODAEC
+sed -i 's|removed { }||g' $MODAEC
+sed -i 's|removed {}||g' $MODAEC
 }
 remove_xml() {
-for RMVS in $RMV; do
-  sed -i "s/\"$RMVS\"/\"removed\"/g" $MODAEX
+for RMV in $RMVS; do
+  sed -i "s|\"$RMV\"|\"removed\"|g" $MODAEX
 done
-sed -i 's/<library name="removed" path="removed"\/>//g' $MODAEX
-sed -i 's/<library name="proxy" path="removed"\/>//g' $MODAEX
-sed -i 's/<effect name="removed" library="removed" uuid="removed"\/>//g' $MODAEX
-sed -i 's/<effect name="removed" uuid="removed" library="removed"\/>//g' $MODAEX
-sed -i 's/<libsw library="removed" uuid="removed"\/>//g' $MODAEX
-sed -i 's/<libhw library="removed" uuid="removed"\/>//g' $MODAEX
-sed -i 's/<apply effect="removed"\/>//g' $MODAEX
-sed -i 's/<library name="removed" path="removed" \/>//g' $MODAEX
-sed -i 's/<library name="proxy" path="removed" \/>//g' $MODAEX
-sed -i 's/<effect name="removed" library="removed" uuid="removed" \/>//g' $MODAEX
-sed -i 's/<effect name="removed" uuid="removed" library="removed" \/>//g' $MODAEX
-sed -i 's/<libsw library="removed" uuid="removed" \/>//g' $MODAEX
-sed -i 's/<libhw library="removed" uuid="removed" \/>//g' $MODAEX
-sed -i 's/<apply effect="removed" \/>//g' $MODAEX
+sed -i 's|<library name="removed" path="removed"/>||g' $MODAEX
+sed -i 's|<library name="proxy" path="removed"/>||g' $MODAEX
+sed -i 's|<effect name="removed" library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<effect name="removed" uuid="removed" library="removed"/>||g' $MODAEX
+sed -i 's|<libsw library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<libhw library="removed" uuid="removed"/>||g' $MODAEX
+sed -i 's|<apply effect="removed"/>||g' $MODAEX
+sed -i 's|<library name="removed" path="removed" />||g' $MODAEX
+sed -i 's|<library name="proxy" path="removed" />||g' $MODAEX
+sed -i 's|<effect name="removed" library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<effect name="removed" uuid="removed" library="removed" />||g' $MODAEX
+sed -i 's|<libsw library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<libhw library="removed" uuid="removed" />||g' $MODAEX
+sed -i 's|<apply effect="removed" />||g' $MODAEX
 }
 
 # store
-RMV="ring_helper alarm_helper music_helper voice_helper
-     notification_helper ma_ring_helper ma_alarm_helper
-     ma_music_helper ma_voice_helper ma_system_helper
-     ma_notification_helper sa3d fens lmfv dirac dtsaudio
-     dlb_music_listener dlb_ring_listener dlb_alarm_listener
-     dlb_system_listener dlb_notification_listener"
+RMVS="ring_helper alarm_helper music_helper voice_helper
+      notification_helper ma_ring_helper ma_alarm_helper
+      ma_music_helper ma_voice_helper ma_system_helper
+      ma_notification_helper sa3d fens lmfv dirac dtsaudio
+      dlb_music_listener dlb_ring_listener dlb_alarm_listener
+      dlb_system_listener dlb_notification_listener"
 
 # setup audio effects conf
 if [ "$MODAEC" ]; then
-  for RMVS in $RMV; do
-    sed -i "/^        $RMVS {/ {;N s/        $RMVS {\n        }//}" $MODAEC
-    sed -i "s/$RMVS { }//g" $MODAEC
-    sed -i "s/$RMVS {}//g" $MODAEC
+  for RMV in $RMVS; do
+    sed -i "/^        $RMV {/ {;N s/        $RMV {\n        }//}" $MODAEC
+    sed -i "s|$RMV { }||g" $MODAEC
+    sed -i "s|$RMV {}||g" $MODAEC
   done
-  if ! grep -Eq '^output_session_processing {' $MODAEC; then
+  if ! grep -q '^output_session_processing {' $MODAEC; then
     sed -i -e '$a\
+\
 output_session_processing {\
     music {\
     }\
@@ -85,22 +79,22 @@ output_session_processing {\
     }\
 }\' $MODAEC
   else
-    if ! grep -Eq '^    notification {' $MODAEC; then
+    if ! grep -q '^    notification {' $MODAEC; then
       sed -i "/^output_session_processing {/a\    notification {\n    }" $MODAEC
     fi
-    if ! grep -Eq '^    voice_call {' $MODAEC; then
+    if ! grep -q '^    voice_call {' $MODAEC; then
       sed -i "/^output_session_processing {/a\    voice_call {\n    }" $MODAEC
     fi
-    if ! grep -Eq '^    system {' $MODAEC; then
+    if ! grep -q '^    system {' $MODAEC; then
       sed -i "/^output_session_processing {/a\    system {\n    }" $MODAEC
     fi
-    if ! grep -Eq '^    alarm {' $MODAEC; then
+    if ! grep -q '^    alarm {' $MODAEC; then
       sed -i "/^output_session_processing {/a\    alarm {\n    }" $MODAEC
     fi
-    if ! grep -Eq '^    ring {' $MODAEC; then
+    if ! grep -q '^    ring {' $MODAEC; then
       sed -i "/^output_session_processing {/a\    ring {\n    }" $MODAEC
     fi
-    if ! grep -Eq '^    music {' $MODAEC; then
+    if ! grep -q '^    music {' $MODAEC; then
       sed -i "/^output_session_processing {/a\    music {\n    }" $MODAEC
     fi
   fi
@@ -108,12 +102,12 @@ fi
 
 # setup audio effects xml
 if [ "$MODAEX" ]; then
-  for RMVS in $RMV; do
-    sed -i "s/<apply effect=\"$RMVS\"\/>//g" $MODAEX
-    sed -i "s/<apply effect=\"$RMVS\" \/>//g" $MODAEX
+  for RMV in $RMVS; do
+    sed -i "s|<apply effect=\"$RMV\"/>||g" $MODAEX
+    sed -i "s|<apply effect=\"$RMV\" />||g" $MODAEX
   done
-  if ! grep -Eq '<postprocess>' $MODAEX\
-  || grep -Eq '<!-- Audio post processor' $MODAEX; then
+  if ! grep -q '<postprocess>' $MODAEX\
+  || grep -q '<!-- Audio post processor' $MODAEX; then
     sed -i '/<\/effects>/a\
     <postprocess>\
         <stream type="music">\
@@ -130,30 +124,30 @@ if [ "$MODAEX" ]; then
         <\/stream>\
     <\/postprocess>' $MODAEX
   else
-    if ! grep -Eq '<stream type="notification">' $MODAEX\
-    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
-    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
+    if ! grep -q '<stream type="notification">' $MODAEX\
+    || grep -q '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -q '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"notification\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="voice_call">' $MODAEX; then
+    if ! grep -q '<stream type="voice_call">' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"voice_call\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="system">' $MODAEX; then
+    if ! grep -q '<stream type="system">' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"system\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="alarm">' $MODAEX\
-    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
-    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
+    if ! grep -q '<stream type="alarm">' $MODAEX\
+    || grep -q '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -q '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"alarm\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="ring">' $MODAEX\
-    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
-    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
+    if ! grep -q '<stream type="ring">' $MODAEX\
+    || grep -q '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -q '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"ring\">\n        <\/stream>" $MODAEX
     fi
-    if ! grep -Eq '<stream type="music">' $MODAEX\
-    || grep -Eq '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
-    || grep -Eq '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
+    if ! grep -q '<stream type="music">' $MODAEX\
+    || grep -q '<!-- YunMang.Xiao@PSW.MM.Dolby' $MODAEX\
+    || grep -q '<!-- WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT' $MODAEX; then
       sed -i "/<postprocess>/a\        <stream type=\"music\">\n        <\/stream>" $MODAEX
     fi
   fi
@@ -164,7 +158,7 @@ LIB=libdlbatmos.so
 LIBNAME=dlbatmos
 NAME=dlbatmos
 UUID=9d4921da-8225-4f29-aefa-39537a041337
-RMV="$LIB $LIBNAME $NAME $UUID"
+RMVS="$LIB $LIBNAME $NAME $UUID"
 
 # patch audio effects conf
 if [ "$MODAEC" ]; then
@@ -194,8 +188,18 @@ fi
 
 # patch audio policy
 #uif [ "$MODAP" ]; then
-#u  sed -i 's/RAW/NONE/g' $MODAP
-#u  sed -i 's/,raw//g' $MODAP
+#u  sed -i 's|RAW|NONE|g' $MODAP
+#u  sed -i 's|,raw||g' $MODAP
 #ufi
+
+
+
+
+
+
+
+
+
+
 
 

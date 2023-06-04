@@ -1,41 +1,5 @@
 # space
-if [ "$BOOTMODE" == true ]; then
-  ui_print " "
-fi
-
-# magisk
-if [ -d /sbin/.magisk ]; then
-  MAGISKTMP=/sbin/.magisk
-else
-  MAGISKTMP=`realpath /dev/*/.magisk`
-fi
-
-# path
-if [ "$BOOTMODE" == true ]; then
-  MIRROR=$MAGISKTMP/mirror
-else
-  MIRROR=
-fi
-SYSTEM=`realpath $MIRROR/system`
-PRODUCT=`realpath $MIRROR/product`
-VENDOR=`realpath $MIRROR/vendor`
-SYSTEM_EXT=`realpath $MIRROR/system_ext`
-if [ -d $MIRROR/odm ]; then
-  ODM=`realpath $MIRROR/odm`
-else
-  ODM=`realpath /odm`
-fi
-if [ -d $MIRROR/my_product ]; then
-  MY_PRODUCT=`realpath $MIRROR/my_product`
-else
-  MY_PRODUCT=`realpath /my_product`
-fi
-
-# optionals
-OPTIONALS=/sdcard/optionals.prop
-if [ ! -f $OPTIONALS ]; then
-  touch $OPTIONALS
-fi
+ui_print " "
 
 # info
 MODVER=`grep_prop version $MODPATH/module.prop`
@@ -43,9 +7,150 @@ MODVERCODE=`grep_prop versionCode $MODPATH/module.prop`
 ui_print " ID=$MODID"
 ui_print " Version=$MODVER"
 ui_print " VersionCode=$MODVERCODE"
-ui_print " MagiskVersion=$MAGISK_VER"
-ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
+if [ "$KSU" == true ]; then
+  ui_print " KSUVersion=$KSU_VER"
+  ui_print " KSUVersionCode=$KSU_VER_CODE"
+  ui_print " KSUKernelVersionCode=$KSU_KERNEL_VER_CODE"
+else
+  ui_print " MagiskVersion=$MAGISK_VER"
+  ui_print " MagiskVersionCode=$MAGISK_VER_CODE"
+fi
 ui_print " "
+
+# huskydg function
+get_device() {
+PAR="$1"
+DEV="`cat /proc/self/mountinfo | awk '{ if ( $5 == "'$PAR'" ) print $3 }' | head -1 | sed 's/:/ /g'`"
+}
+mount_mirror() {
+SRC="$1"
+DES="$2"
+RAN="`head -c6 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9'`"
+while [ -e /dev/$RAN ]; do
+  RAN="`head -c6 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9'`"
+done
+mknod /dev/$RAN b `get_device "$SRC"; echo $DEV`
+if mount -t ext4 -o ro /dev/$RAN "$DES"\
+|| mount -t erofs -o ro /dev/$RAN "$DES"\
+|| mount -t f2fs -o ro /dev/$RAN "$DES"\
+|| mount -t ubifs -o ro /dev/$RAN "$DES"; then
+  blockdev --setrw /dev/$RAN
+  rm -f /dev/$RAN
+  return 0
+fi
+rm -f /dev/$RAN
+return 1
+}
+unmount_mirror() {
+DIRS="$MIRROR/system_root $MIRROR/system $MIRROR/vendor
+      $MIRROR/product $MIRROR/system_ext $MIRROR/odm
+      $MIRROR/my_product $MIRROR"
+for DIR in $DIRS; do
+  umount $DIR
+done
+}
+mount_odm_to_mirror() {
+DIR=/odm
+if [ -d $DIR ]; then
+  ui_print "- Mount $MIRROR$DIR..."
+  mkdir -p $MIRROR$DIR
+  if mount_mirror $DIR $MIRROR$DIR; then
+    ui_print "  $MIRROR$DIR mount success"
+  else
+    ui_print "  ! $MIRROR$DIR mount failed"
+    rm -rf $MIRROR$DIR
+    if [ -d $MIRROR/system_root$DIR ]; then
+      ln -sf $MIRROR/system_root$DIR $MIRROR
+    fi
+  fi
+  ui_print " "
+fi
+}
+mount_my_product_to_mirror() {
+DIR=/my_product
+if [ -d $DIR ]; then
+  ui_print "- Mount $MIRROR$DIR..."
+  mkdir -p $MIRROR$DIR
+  if mount_mirror $DIR $MIRROR$DIR; then
+    ui_print "  $MIRROR$DIR mount success"
+  else
+    ui_print "  ! $MIRROR$DIR mount failed"
+    rm -rf $MIRROR$DIR
+    if [ -d $MIRROR/system_root$DIR ]; then
+      ln -sf $MIRROR/system_root$DIR $MIRROR
+    fi
+  fi
+  ui_print " "
+fi
+}
+mount_partitions_to_mirror() {
+unmount_mirror
+# mount system
+if [ "$SYSTEM_ROOT" == true ]; then
+  DIR=/system_root
+  ui_print "- Mount $MIRROR$DIR..."
+  mkdir -p $MIRROR$DIR
+  if mount_mirror / $MIRROR$DIR; then
+    ui_print "  $MIRROR$DIR mount success"
+    rm -rf $MIRROR/system
+    ln -sf $MIRROR$DIR/system $MIRROR
+  else
+    ui_print "  ! $MIRROR$DIR mount failed"
+    rm -rf $MIRROR$DIR
+  fi
+else
+  DIR=/system
+  ui_print "- Mount $MIRROR$DIR..."
+  mkdir -p $MIRROR$DIR
+  if mount_mirror $DIR $MIRROR$DIR; then
+    ui_print "  $MIRROR$DIR mount success"
+  else
+    ui_print "  ! $MIRROR$DIR mount failed"
+    rm -rf $MIRROR$DIR
+  fi
+fi
+ui_print " "
+# mount vendor
+DIR=/vendor
+ui_print "- Mount $MIRROR$DIR..."
+mkdir -p $MIRROR$DIR
+if mount_mirror $DIR $MIRROR$DIR; then
+  ui_print "  $MIRROR$DIR mount success"
+else
+  ui_print "  ! $MIRROR$DIR mount failed"
+  rm -rf $MIRROR$DIR
+  ln -sf $MIRROR/system$DIR $MIRROR
+fi
+ui_print " "
+# mount product
+DIR=/product
+ui_print "- Mount $MIRROR$DIR..."
+mkdir -p $MIRROR$DIR
+if mount_mirror $DIR $MIRROR$DIR; then
+  ui_print "  $MIRROR$DIR mount success"
+else
+  ui_print "  ! $MIRROR$DIR mount failed"
+  rm -rf $MIRROR$DIR
+  ln -sf $MIRROR/system$DIR $MIRROR
+fi
+ui_print " "
+# mount system_ext
+DIR=/system_ext
+ui_print "- Mount $MIRROR$DIR..."
+mkdir -p $MIRROR$DIR
+if mount_mirror $DIR $MIRROR$DIR; then
+  ui_print "  $MIRROR$DIR mount success"
+else
+  ui_print "  ! $MIRROR$DIR mount failed"
+  rm -rf $MIRROR$DIR
+  if [ -d $MIRROR/system$DIR ]; then
+    ln -sf $MIRROR/system$DIR $MIRROR
+  fi
+fi
+ui_print " "
+mount_odm_to_mirror
+mount_my_product_to_mirror
+}
 
 # sdk
 NUM=17
@@ -59,10 +164,50 @@ else
   ui_print " "
 fi
 
+# magisk
+MAGISKPATH=`magisk --path`
+if [ "$BOOTMODE" == true ]; then
+  if [ "$MAGISKPATH" ]; then
+    mount -o rw,remount $MAGISKPATH
+    MAGISKTMP=$MAGISKPATH/.magisk
+    MIRROR=$MAGISKTMP/mirror
+  else
+    MAGISKTMP=/mnt
+    mount -o rw,remount $MAGISKTMP
+    MIRROR=$MAGISKTMP/mirror
+    mount_partitions_to_mirror
+  fi
+fi
+
+# path
+SYSTEM=`realpath $MIRROR/system`
+PRODUCT=`realpath $MIRROR/product`
+VENDOR=`realpath $MIRROR/vendor`
+SYSTEM_EXT=`realpath $MIRROR/system_ext`
+if [ "$BOOTMODE" == true ]; then
+  if [ ! -d $MIRROR/odm ]; then
+    mount_odm_to_mirror
+  fi
+  if [ ! -d $MIRROR/my_product ]; then
+    mount_my_product_to_mirror
+  fi
+fi
+ODM=`realpath $MIRROR/odm`
+MY_PRODUCT=`realpath $MIRROR/my_product`
+
+# optionals
+OPTIONALS=/sdcard/optionals.prop
+if [ ! -f $OPTIONALS ]; then
+  touch $OPTIONALS
+fi
+
 # mount
 if [ "$BOOTMODE" != true ]; then
-  mount -o rw -t auto /dev/block/bootdevice/by-name/cust /vendor
-  mount -o rw -t auto /dev/block/bootdevice/by-name/vendor /vendor
+  if [ -e /dev/block/bootdevice/by-name/vendor ]; then
+    mount -o rw -t auto /dev/block/bootdevice/by-name/vendor /vendor
+  else
+    mount -o rw -t auto /dev/block/bootdevice/by-name/cust /vendor
+  fi
   mount -o rw -t auto /dev/block/bootdevice/by-name/persist /persist
   mount -o rw -t auto /dev/block/bootdevice/by-name/metadata /metadata
 fi
@@ -154,7 +299,7 @@ if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
-elif [ -d $DIR ] && ! grep -Eq "$MODNAME" $FILE; then
+elif [ -d $DIR ] && ! grep -q "$MODNAME" $FILE; then
   ui_print "- Different version detected"
   ui_print "  Cleaning-up $MODID data..."
   cleanup
@@ -205,49 +350,48 @@ fi
 # function
 hide_oat() {
 for APPS in $APP; do
-  mkdir -p `find $MODPATH/system -type d -name $APPS`/oat
-  touch `find $MODPATH/system -type d -name $APPS`/oat/.replace
+  REPLACE="$REPLACE
+  `find $MODPATH/system -type d -name $APPS | sed "s|$MODPATH||"`/oat"
 done
 }
 replace_dir() {
 if [ -d $DIR ]; then
-  mkdir -p $MODDIR
-  touch $MODDIR/.replace
+  REPLACE="$REPLACE $MODDIR"
 fi
 }
 hide_app() {
 DIR=$SYSTEM/app/$APPS
-MODDIR=$MODPATH/system/app/$APPS
+MODDIR=/system/app/$APPS
 replace_dir
 DIR=$SYSTEM/priv-app/$APPS
-MODDIR=$MODPATH/system/priv-app/$APPS
+MODDIR=/system/priv-app/$APPS
 replace_dir
 DIR=$PRODUCT/app/$APPS
-MODDIR=$MODPATH/system/product/app/$APPS
+MODDIR=/system/product/app/$APPS
 replace_dir
 DIR=$PRODUCT/priv-app/$APPS
-MODDIR=$MODPATH/system/product/priv-app/$APPS
+MODDIR=/system/product/priv-app/$APPS
 replace_dir
 DIR=$MY_PRODUCT/app/$APPS
-MODDIR=$MODPATH/system/product/app/$APPS
+MODDIR=/system/product/app/$APPS
 replace_dir
 DIR=$MY_PRODUCT/priv-app/$APPS
-MODDIR=$MODPATH/system/product/priv-app/$APPS
+MODDIR=/system/product/priv-app/$APPS
 replace_dir
 DIR=$PRODUCT/preinstall/$APPS
-MODDIR=$MODPATH/system/product/preinstall/$APPS
+MODDIR=/system/product/preinstall/$APPS
 replace_dir
 DIR=$SYSTEM_EXT/app/$APPS
-MODDIR=$MODPATH/system/system_ext/app/$APPS
+MODDIR=/system/system_ext/app/$APPS
 replace_dir
 DIR=$SYSTEM_EXT/priv-app/$APPS
-MODDIR=$MODPATH/system/system_ext/priv-app/$APPS
+MODDIR=/system/system_ext/priv-app/$APPS
 replace_dir
 DIR=$VENDOR/app/$APPS
-MODDIR=$MODPATH/system/vendor/app/$APPS
+MODDIR=/system/vendor/app/$APPS
 replace_dir
 DIR=$VENDOR/euclid/product/app/$APPS
-MODDIR=$MODPATH/system/vendor/euclid/product/app/$APPS
+MODDIR=/system/vendor/euclid/product/app/$APPS
 replace_dir
 }
 
@@ -262,7 +406,7 @@ done
 # stream mode
 FILE=$MODPATH/.aml.sh
 PROP=`grep_prop stream.mode $OPTIONALS`
-if echo "$PROP" | grep -Eq m; then
+if echo "$PROP" | grep -q m; then
   ui_print "- Activating music stream..."
   sed -i 's/#m//g' $FILE
   sed -i 's/musicstream=/musicstream=true/g' $MODPATH/acdb.conf
@@ -273,36 +417,36 @@ else
     hide_app
   done
 fi
-if echo "$PROP" | grep -Eq r; then
+if echo "$PROP" | grep -q r; then
   ui_print "- Activating ring stream..."
   sed -i 's/#r//g' $FILE
   ui_print " "
 fi
-if echo "$PROP" | grep -Eq a; then
+if echo "$PROP" | grep -q a; then
   ui_print "- Activating alarm stream..."
   sed -i 's/#a//g' $FILE
   ui_print " "
 fi
-if echo "$PROP" | grep -Eq s; then
+if echo "$PROP" | grep -q s; then
   ui_print "- Activating system stream..."
   sed -i 's/#s//g' $FILE
   ui_print " "
 fi
-if echo "$PROP" | grep -Eq v; then
+if echo "$PROP" | grep -q v; then
   ui_print "- Activating voice_call stream..."
   sed -i 's/#v//g' $FILE
   ui_print " "
 fi
-if echo "$PROP" | grep -Eq n; then
+if echo "$PROP" | grep -q n; then
   ui_print "- Activating notification stream..."
   sed -i 's/#n//g' $FILE
   ui_print " "
 fi
 
 # directory
-if [ ! -d $VENDOR/lib/soundfx ]; then
-  ui_print "- /vendor/lib/soundfx is not suported."
-  ui_print "  Moving to /system/lib/soundfx..."
+if [ "$API" -le 25 ]; then
+  ui_print "- /vendor/lib/soundfx is not supported in SDK 25 and bellow"
+  ui_print "  Using /system/lib/soundfx instead"
   mv -f $MODPATH/system/vendor/lib* $MODPATH/system
   ui_print " "
 fi
@@ -316,7 +460,7 @@ ui_print " "
 # audio rotation
 FILE=$MODPATH/service.sh
 if [ "`grep_prop audio.rotation $OPTIONALS`" == 1 ]; then
-  ui_print "- Activating ro.audio.monitorRotation=true"
+  ui_print "- Enables ro.audio.monitorRotation=true"
   sed -i '1i\
 resetprop ro.audio.monitorRotation true' $FILE
   ui_print " "
@@ -325,28 +469,29 @@ fi
 # raw
 FILE=$MODPATH/.aml.sh
 if [ "`grep_prop disable.raw $OPTIONALS`" == 0 ]; then
-  ui_print "- Not disabling Ultra Low Latency playback (RAW)"
+  ui_print "- Not disables Ultra Low Latency playback (RAW)"
   ui_print " "
 else
   sed -i 's/#u//g' $FILE
 fi
 
-# other
-FILE=$MODPATH/service.sh
-if [ "`grep_prop other.etc $OPTIONALS`" == 1 ]; then
-  ui_print "- Activating other etc files bind mount..."
-  sed -i 's/#p//g' $FILE
-  ui_print " "
+# run
+. $MODPATH/copy.sh
+. $MODPATH/.aml.sh
+
+# unmount
+if [ "$BOOTMODE" == true ] && [ ! "$MAGISKPATH" ]; then
+  unmount_mirror
 fi
 
-# permission
-if [ "$API" -ge 26 ]; then
-  ui_print "- Setting permission..."
-  DIR=`find $MODPATH/system/vendor -type d`
-  for DIRS in $DIR; do
-    chown 0.2000 $DIRS
-  done
-  ui_print " "
-fi
+
+
+
+
+
+
+
+
+
 
 

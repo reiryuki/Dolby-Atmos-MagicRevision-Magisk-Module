@@ -1,7 +1,7 @@
 MODPATH=${0%/*}
 API=`getprop ro.build.version.sdk`
 
-# debug
+# log
 exec 2>$MODPATH/debug.log
 set -x
 

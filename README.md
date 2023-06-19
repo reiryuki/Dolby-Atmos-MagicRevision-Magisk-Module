@@ -10,7 +10,7 @@
 
 ## Sources
 - Dolby Magic Revision MD2 Magisk Module by Little Monk
-- com.atmos classes: apkmirror.com com.dolby DAX1-1.9.3_r1 1
+- com.atmos classes: https://apkmirror.com com.dolby DAX1-1.9.3_r1 1 by HTC Corporation
 
 ## Screenshots
 - https://t.me/androidryukimodsdiscussions/78576
@@ -20,7 +20,7 @@
 - Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
-- Install this module https://www.pling.com/p/1610004/ via Magisk app or KernelSU app or Recovery (unless you are using KernelSU)
+- Install this module https://www.pling.com/p/1610004/ via Magisk app or KernelSU app or Recovery if Magisk installed
 - Install AML Magisk Module https://t.me/androidryukimodsdiscussions/29836 only if using any other audio mod module
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt and reboot after
@@ -43,6 +43,9 @@
 - Android 12 AncientOS ROM
 - Android 12.1 Nusantara ROM
 - Android 13 AOSP ROM
+
+## Known Issues
+- Doesn't work in Pixel 6 Pro Android 13 stock ROM
 
 ## Credits and contributors
 - https://t.me/viperatmos

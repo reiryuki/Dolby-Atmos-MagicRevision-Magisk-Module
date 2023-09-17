@@ -29,6 +29,11 @@ else
 fi
 ui_print " "
 
+# 32 bit
+if [ ! "`getprop ro.product.cpu.abilist32`" ]; then
+  abort "- This ROM doesn't support 32 bit library."
+fi
+
 # sdk
 NUM=17
 if [ "$API" -lt $NUM ]; then
@@ -49,10 +54,16 @@ magisk_setup
 
 # path
 SYSTEM=`realpath $MIRROR/system`
-PRODUCT=`realpath $MIRROR/product`
-VENDOR=`realpath $MIRROR/vendor`
-SYSTEM_EXT=`realpath $MIRROR/system_ext`
 if [ "$BOOTMODE" == true ]; then
+  if [ ! -d $MIRROR/vendor ]; then
+    mount_vendor_to_mirror
+  fi
+  if [ ! -d $MIRROR/product ]; then
+    mount_product_to_mirror
+  fi
+  if [ ! -d $MIRROR/system_ext ]; then
+    mount_system_ext_to_mirror
+  fi
   if [ ! -d $MIRROR/odm ]; then
     mount_odm_to_mirror
   fi
@@ -60,6 +71,9 @@ if [ "$BOOTMODE" == true ]; then
     mount_my_product_to_mirror
   fi
 fi
+VENDOR=`realpath $MIRROR/vendor`
+PRODUCT=`realpath $MIRROR/product`
+SYSTEM_EXT=`realpath $MIRROR/system_ext`
 ODM=`realpath $MIRROR/odm`
 MY_PRODUCT=`realpath $MIRROR/my_product`
 
@@ -100,10 +114,10 @@ fi
 
 # cleaning
 ui_print "- Cleaning..."
-PKG=`cat $MODPATH/package.txt`
+PKGS=`cat $MODPATH/package.txt`
 if [ "$BOOTMODE" == true ]; then
-  for PKGS in $PKG; do
-    RES=`pm uninstall $PKGS 2>/dev/null`
+  for PKG in $PKGS; do
+    RES=`pm uninstall $PKG 2>/dev/null`
   done
 fi
 remove_sepolicy_rule
@@ -111,26 +125,26 @@ ui_print " "
 
 # function
 conflict() {
-for NAMES in $NAME; do
-  DIR=/data/adb/modules_update/$NAMES
+for NAME in $NAMES; do
+  DIR=/data/adb/modules_update/$NAME
   if [ -f $DIR/uninstall.sh ]; then
     sh $DIR/uninstall.sh
   fi
   rm -rf $DIR
-  DIR=/data/adb/modules/$NAMES
+  DIR=/data/adb/modules/$NAME
   rm -f $DIR/update
   touch $DIR/remove
-  FILE=/data/adb/modules/$NAMES/uninstall.sh
+  FILE=/data/adb/modules/$NAME/uninstall.sh
   if [ -f $FILE ]; then
     sh $FILE
     rm -f $FILE
   fi
-  rm -rf /metadata/magisk/$NAMES
-  rm -rf /mnt/vendor/persist/magisk/$NAMES
-  rm -rf /persist/magisk/$NAMES
-  rm -rf /data/unencrypted/magisk/$NAMES
-  rm -rf /cache/magisk/$NAMES
-  rm -rf /cust/magisk/$NAMES
+  rm -rf /metadata/magisk/$NAME
+  rm -rf /mnt/vendor/persist/magisk/$NAME
+  rm -rf /persist/magisk/$NAME
+  rm -rf /data/unencrypted/magisk/$NAME
+  rm -rf /cache/magisk/$NAME
+  rm -rf /cust/magisk/$NAME
 done
 }
 
@@ -149,7 +163,7 @@ fi
 DIR=/data/adb/modules/$MODID
 FILE=$DIR/module.prop
 if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
-  sed -i 's/^data.cleanup=1/data.cleanup=0/' $OPTIONALS
+  sed -i 's|^data.cleanup=1|data.cleanup=0|g' $OPTIONALS
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
@@ -202,9 +216,9 @@ fi
 
 # function
 hide_oat() {
-for APPS in $APP; do
+for APP in $APPS; do
   REPLACE="$REPLACE
-  `find $MODPATH/system -type d -name $APPS | sed "s|$MODPATH||"`/oat"
+  `find $MODPATH/system -type d -name $APP | sed "s|$MODPATH||g"`/oat"
 done
 }
 replace_dir() {
@@ -213,48 +227,48 @@ if [ -d $DIR ]; then
 fi
 }
 hide_app() {
-DIR=$SYSTEM/app/$APPS
-MODDIR=/system/app/$APPS
-replace_dir
-DIR=$SYSTEM/priv-app/$APPS
-MODDIR=/system/priv-app/$APPS
-replace_dir
-DIR=$PRODUCT/app/$APPS
-MODDIR=/system/product/app/$APPS
-replace_dir
-DIR=$PRODUCT/priv-app/$APPS
-MODDIR=/system/product/priv-app/$APPS
-replace_dir
-DIR=$MY_PRODUCT/app/$APPS
-MODDIR=/system/product/app/$APPS
-replace_dir
-DIR=$MY_PRODUCT/priv-app/$APPS
-MODDIR=/system/product/priv-app/$APPS
-replace_dir
-DIR=$PRODUCT/preinstall/$APPS
-MODDIR=/system/product/preinstall/$APPS
-replace_dir
-DIR=$SYSTEM_EXT/app/$APPS
-MODDIR=/system/system_ext/app/$APPS
-replace_dir
-DIR=$SYSTEM_EXT/priv-app/$APPS
-MODDIR=/system/system_ext/priv-app/$APPS
-replace_dir
-DIR=$VENDOR/app/$APPS
-MODDIR=/system/vendor/app/$APPS
-replace_dir
-DIR=$VENDOR/euclid/product/app/$APPS
-MODDIR=/system/vendor/euclid/product/app/$APPS
-replace_dir
+for APP in $APPS; do
+  DIR=$SYSTEM/app/$APP
+  MODDIR=/system/app/$APP
+  replace_dir
+  DIR=$SYSTEM/priv-app/$APP
+  MODDIR=/system/priv-app/$APP
+  replace_dir
+  DIR=$PRODUCT/app/$APP
+  MODDIR=/system/product/app/$APP
+  replace_dir
+  DIR=$PRODUCT/priv-app/$APP
+  MODDIR=/system/product/priv-app/$APP
+  replace_dir
+  DIR=$MY_PRODUCT/app/$APP
+  MODDIR=/system/product/app/$APP
+  replace_dir
+  DIR=$MY_PRODUCT/priv-app/$APP
+  MODDIR=/system/product/priv-app/$APP
+  replace_dir
+  DIR=$PRODUCT/preinstall/$APP
+  MODDIR=/system/product/preinstall/$APP
+  replace_dir
+  DIR=$SYSTEM_EXT/app/$APP
+  MODDIR=/system/system_ext/app/$APP
+  replace_dir
+  DIR=$SYSTEM_EXT/priv-app/$APP
+  MODDIR=/system/system_ext/priv-app/$APP
+  replace_dir
+  DIR=$VENDOR/app/$APP
+  MODDIR=/system/vendor/app/$APP
+  replace_dir
+  DIR=$VENDOR/euclid/product/app/$APP
+  MODDIR=/system/vendor/euclid/product/app/$APP
+  replace_dir
+done
 }
 
 # hide
-APP="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
+APPS="`ls $MODPATH/system/priv-app` `ls $MODPATH/system/app`"
 hide_oat
-APP=MusicFX
-for APPS in $APP; do
-  hide_app
-done
+APPS=MusicFX
+hide_app
 
 # stream mode
 FILE=$MODPATH/.aml.sh
@@ -265,10 +279,8 @@ if echo "$PROP" | grep -q m; then
   sed -i 's|musicstream=|musicstream=true|g' $MODPATH/acdb.conf
   ui_print " "
 else
-  APP=AudioFX
-  for APPS in $APP; do
-    hide_app
-  done
+  APPS=AudioFX
+  hide_app
 fi
 if echo "$PROP" | grep -q r; then
   ui_print "- Activating ring stream..."
@@ -343,16 +355,17 @@ fi
 
 # directory
 if [ "$API" -le 25 ]; then
-  ui_print "- /vendor/lib/soundfx is not supported in SDK 25 and bellow"
-  ui_print "  Using /system/lib/soundfx instead"
-  mv -f $MODPATH/system/vendor/lib* $MODPATH/system
+  ui_print "- /vendor/lib*/soundfx is not supported in SDK 25 and bellow"
+  ui_print "  Using /system/lib*/soundfx instead"
+  cp -rf $MODPATH/system/vendor/lib* $MODPATH/system
+  rm -rf $MODPATH/system/vendor/lib*
   ui_print " "
 fi
 
 # settings
 FILE=$MODPATH/system/etc/dlb-default.xml
 ui_print "- Disable volume leveler for all default profiles"
-sed -i 's/dvle=\[1\]/dvle=\[0\]/g' $FILE
+sed -i 's|dvle=\[1\]|dvle=\[0\]|g' $FILE
 ui_print " "
 
 # audio rotation
@@ -370,7 +383,7 @@ if [ "`grep_prop disable.raw $OPTIONALS`" == 0 ]; then
   ui_print "- Not disables Ultra Low Latency playback (RAW)"
   ui_print " "
 else
-  sed -i 's/#u//g' $FILE
+  sed -i 's|#u||g' $FILE
 fi
 
 # run

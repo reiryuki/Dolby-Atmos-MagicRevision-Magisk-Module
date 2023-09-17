@@ -1,11 +1,14 @@
 MODPATH=${0%/*}
-API=`getprop ro.build.version.sdk`
 
 # log
 exec 2>$MODPATH/debug.log
 set -x
 
+# var
+API=`getprop ro.build.version.sdk`
+
 # property
+resetprop ro.audio.ignore_effects false
 resetprop dolby.monospeaker false
 
 # restart
@@ -78,7 +81,7 @@ if [ "$API" -ge 30 ]; then
   appops set $PKG AUTO_REVOKE_PERMISSIONS_IF_UNUSED ignore
 fi
 PKGOPS=`appops get $PKG`
-UID=`dumpsys package $PKG 2>/dev/null | grep -m 1 userId= | sed 's/    userId=//'`
+UID=`dumpsys package $PKG 2>/dev/null | grep -m 1 userId= | sed 's|    userId=||g'`
 if [ "$UID" -gt 9999 ]; then
   UIDOPS=`appops get --uid "$UID"`
 fi
@@ -86,7 +89,7 @@ fi
 # function
 stop_log() {
 FILE=$MODPATH/debug.log
-SIZE=`du $FILE | sed "s|$FILE||"`
+SIZE=`du $FILE | sed "s|$FILE||g"`
 if [ "$LOG" != stopped ] && [ "$SIZE" -gt 50 ]; then
   exec 2>/dev/null
   LOG=stopped

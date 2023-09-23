@@ -11,7 +11,7 @@ AUD="*audio*effects*.conf -o -name *audio*effects*.xml -o -name *policy*.conf -o
 rm -f `find $MODPATH -type f -name $AUD`
 FILES=`find /system /odm /my_product -type f -name $AUD`
 for FILE in $FILES; do
-  MODFILE=$MODPATH/system`echo "$FILE" | sed 's|/system||'`
+  MODFILE=$MODPATH/system`echo "$FILE" | sed 's|/system||g'`
   copy_dir_file $FILE $MODFILE
 done
 FILES=`find /vendor -type f -name $AUD`

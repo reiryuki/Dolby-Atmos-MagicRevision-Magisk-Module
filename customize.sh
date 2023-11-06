@@ -22,6 +22,12 @@ if [ "`grep_prop debug.log $OPTIONALS`" == 1 ]; then
   ui_print " "
 fi
 
+# var
+LIST32BIT=`grep_get_prop ro.product.cpu.abilist32`
+if [ ! "$LIST32BIT" ]; then
+  LIST32BIT=`grep_get_prop ro.system.product.cpu.abilist32`
+fi
+
 # run
 . $MODPATH/function.sh
 
@@ -43,7 +49,7 @@ fi
 ui_print " "
 
 # 32 bit
-if [ ! "`getprop ro.product.cpu.abilist32`" ]; then
+if [ ! "$LIST32BIT" ]; then
   abort "- This ROM doesn't support 32 bit library."
 fi
 
@@ -169,12 +175,14 @@ fi
 # cleanup
 DIR=/data/adb/modules/$MODID
 FILE=$DIR/module.prop
+PREVMODNAME=`grep_prop name $FILE`
 if [ "`grep_prop data.cleanup $OPTIONALS`" == 1 ]; then
   sed -i 's|^data.cleanup=1|data.cleanup=0|g' $OPTIONALS
   ui_print "- Cleaning-up $MODID data..."
   cleanup
   ui_print " "
-elif [ -d $DIR ] && ! grep -q "$MODNAME" $FILE; then
+elif [ -d $DIR ]\
+&& [ "$PREVMODNAME" != "$MODNAME" ]; then
   ui_print "- Different version detected"
   ui_print "  Cleaning-up $MODID data..."
   cleanup
@@ -371,9 +379,7 @@ fi
 
 # settings
 FILE=$MODPATH/system/etc/dlb-default.xml
-ui_print "- Disable volume leveler for all default profiles"
 sed -i 's|dvle=\[1\]|dvle=\[0\]|g' $FILE
-ui_print " "
 
 # audio rotation
 FILE=$MODPATH/service.sh

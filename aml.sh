@@ -1,12 +1,15 @@
-[ -z $MODPATH ] && MODPATH=${0%/*}
-[ -z $API ] && API=`getprop ro.build.version.sdk`
+[ ! "$MODPATH" ] && MODPATH=${0%/*}
+[ ! "$API" ] && API=`getprop ro.build.version.sdk`
 
 # destination
-if [ "$API" -ge 26 ]; then
-  LIBPATH="\/vendor\/lib\/soundfx"
-else
-  LIBPATH="\/system\/lib\/soundfx"
+if [ ! "$libdir" ]; then
+  if [ "$API" -ge 26 ]; then
+    libdir=/vendor
+  else
+    libdir=/system
+  fi
 fi
+ARCHDIR=/lib
 MODAEC=`find $MODPATH -type f -name *audio*effects*.conf`
 MODAEX=`find $MODPATH -type f -name *audio*effects*.xml`
 MODAP=`find $MODPATH -type f -name *policy*.conf -o -name *policy*.xml`
@@ -257,7 +260,7 @@ RMVS="$LIB $LIBNAME $NAME $UUID"
 # patch audio effects conf
 if [ "$MODAEC" ]; then
   remove_conf
-  sed -i "/^libraries {/a\  $LIBNAME {\n    path $LIBPATH\/$LIB\n  }" $MODAEC
+  sed -i "/^libraries {/a\  $LIBNAME {\n    path \\$libdir\\$ARCHDIR\/soundfx\/$LIB\n  }" $MODAEC
   sed -i "/^effects {/a\  $NAME {\n    library $LIBNAME\n    uuid $UUID\n  }" $MODAEC
 #m  sed -i "/^    music {/a\        $NAME {\n        }" $MODAEC
 #r  sed -i "/^    ring {/a\        $NAME {\n        }" $MODAEC

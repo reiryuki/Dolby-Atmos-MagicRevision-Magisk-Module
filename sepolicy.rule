@@ -37,9 +37,9 @@ allow { hal_audio_default mtk_hal_audio audioserver } { system_app priv_app plat
 allow hal_audio_default hal_audio_default capability2 block_suspend
 allow mtk_hal_audio mtk_hal_audio capability2 block_suspend
 allow audioserver audioserver capability2 block_suspend
-allow hal_audio_default hal_audio_default capability sys_nice
-allow mtk_hal_audio mtk_hal_audio capability sys_nice
-allow audioserver audioserver capability sys_nice
+allow hal_audio_default hal_audio_default capability { sys_nice dac_override sys_admin dac_read_search }
+allow mtk_hal_audio mtk_hal_audio capability { sys_nice dac_override sys_admin dac_read_search }
+allow audioserver audioserver capability { sys_nice dac_override sys_admin dac_read_search }
 
 
 

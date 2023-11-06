@@ -1,4 +1,13 @@
 # function
+remove_cache() {
+FILES=`find $MODPATH -type f -name *.apk | sed 's|.apk||g'`
+APPS=`for FILE in $FILES; do basename $FILE; done`
+for APP in $APPS; do
+  rm -f `find /data/system/package_cache\
+   /data/dalvik-cache /data/resource-cache\
+   -type f -name *$APP*`
+done
+}
 mount_partitions_in_recovery() {
 if [ "$BOOTMODE" != true ]; then
   DIR=/dev/block/bootdevice/by-name

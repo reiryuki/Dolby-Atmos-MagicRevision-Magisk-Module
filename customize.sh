@@ -386,7 +386,8 @@ FILE=$MODPATH/service.sh
 if [ "`grep_prop audio.rotation $OPTIONALS`" == 1 ]; then
   ui_print "- Enables ro.audio.monitorRotation=true"
   sed -i '1i\
-resetprop ro.audio.monitorRotation true' $FILE
+resetprop ro.audio.monitorRotation true\
+resetprop ro.audio.monitorWindowRotation true' $FILE
   ui_print " "
 fi
 

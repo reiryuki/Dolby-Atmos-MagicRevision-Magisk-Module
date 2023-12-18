@@ -9,8 +9,8 @@ set -x
 API=`getprop ro.build.version.sdk`
 
 # property
-resetprop ro.audio.ignore_effects false
-resetprop dolby.monospeaker false
+resetprop -n ro.audio.ignore_effects false
+resetprop -n dolby.monospeaker false
 
 # restart
 if [ "$API" -ge 24 ]; then
@@ -86,6 +86,9 @@ UID=`dumpsys package $PKG 2>/dev/null | grep -m 1 userId= | sed 's|    userId=||
 if [ "$UID" ] && [ "$UID" -gt 9999 ]; then
   UIDOPS=`appops get --uid "$UID"`
 fi
+
+# audio flinger
+DMAF=`dumpsys media.audio_flinger`
 
 # function
 stop_log() {

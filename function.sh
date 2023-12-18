@@ -141,7 +141,8 @@ fi
 }
 mount_partitions_to_mirror() {
 unmount_mirror
-if [ "$SYSTEM_ROOT" == true ]; then
+if [ "$SYSTEM_ROOT" == true ]\
+|| [ "$SYSTEM_AS_ROOT" == true ]; then
   DIR=/system_root
   ui_print "- Mount $MIRROR$DIR..."
   mkdir -p $MIRROR$DIR

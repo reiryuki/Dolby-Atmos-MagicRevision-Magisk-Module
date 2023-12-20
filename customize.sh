@@ -10,14 +10,14 @@ fi
 
 # log
 if [ "$BOOTMODE" != true ]; then
-  FILE=/storage/emulated/"$UID"/$MODID\_recovery.log
+  FILE=/data/media/"$UID"/$MODID\_recovery.log
   ui_print "- Log will be saved at $FILE"
   exec 2>$FILE
   ui_print " "
 fi
 
 # optionals
-OPTIONALS=/storage/emulated/"$UID"/optionals.prop
+OPTIONALS=/data/media/"$UID"/optionals.prop
 if [ ! -f $OPTIONALS ]; then
   touch $OPTIONALS
 fi
@@ -111,7 +111,7 @@ mv -f $MODPATH/aml.sh $MODPATH/.aml.sh
 # mod ui
 if [ "`grep_prop mod.ui $OPTIONALS`" == 1 ]; then
   APP=Atmos
-  FILE=/storage/emulated/"$UID"/$APP.apk
+  FILE=/data/media/"$UID"/$APP.apk
   DIR=`find $MODPATH/system -type d -name $APP`
   ui_print "- Using modified UI apk..."
   if [ -f $FILE ]; then

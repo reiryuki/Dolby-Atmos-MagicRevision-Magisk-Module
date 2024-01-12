@@ -22,7 +22,7 @@
 
 ## Installation Guide & Download Link
 - Install this module https://www.pling.com/p/1610004/ via Magisk app or KernelSU app or Recovery if Magisk installed
-- Install AML Magisk Module https://t.me/androidryukimodsdiscussions/29836 only if using any other audio mod module
+- Install AML Magisk Module https://t.me/androidryukimodsdiscussions/29836 only if using any other else audio mod module
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot after
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot after
@@ -43,7 +43,7 @@
 - Android 11 DotOS ROM
 - Android 12 AncientOS ROM
 - Android 12.1 Nusantara ROM
-- Android 13 AOSP ROM
+- Android 13 AOSP ROM, CrDroid ROM, & AlphaDroid ROM
 
 ## Known Issues
 - Doesn't work in Pixel 6 Pro Android 13 stock ROM

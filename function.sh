@@ -99,10 +99,17 @@ if [ "$BOOTMODE" == true ]\
   rm -rf $MIRROR/*
 fi
 }
+remount_partitions() {
+PARS="/ /system /vendor /product /system_ext /odm /my_product"
+for PAR in $PARS; do
+  mount -o ro,remount $PAR
+done
+}
 mount_system_to_mirror() {
 DIR=/system
 if [ ! -d $MIRROR$DIR ]; then
   HASMIRROR=false
+  remount_partitions
   unmount_mirror
   ui_print "- Mounting $MIRROR$DIR..."
   if [ "$SYSTEM_ROOT" == true ]\

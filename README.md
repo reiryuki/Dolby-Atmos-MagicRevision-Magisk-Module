@@ -44,6 +44,7 @@
 - Android 12 AncientOS ROM
 - Android 12.1 Nusantara ROM
 - Android 13 AOSP ROM, CrDroid ROM, & AlphaDroid ROM
+- Android 14 LineageOS ROM
 
 ## Known Issues
 - Doesn't work in Pixel 6 Pro Android 13 stock ROM

@@ -20,6 +20,9 @@ else
 fi
 killall $SERVER\
  android.hardware.audio@4.0-service-mediatek
+if [ "$API" -le 33 ]; then
+  killall android.hardware.sensors@1.0-service
+fi
 
 # wait
 sleep 20

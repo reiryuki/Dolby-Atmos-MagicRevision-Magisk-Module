@@ -28,6 +28,7 @@
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot after
 
 ## Optionals
+- https://t.me/androidryukimodsdiscussions/2616
 - Global: https://t.me/androidryukimodsdiscussions/60861
 - Stream: https://t.me/androidryukimodsdiscussions/26764
 

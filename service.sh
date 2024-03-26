@@ -11,6 +11,7 @@ API=`getprop ro.build.version.sdk`
 # property
 resetprop -n ro.audio.ignore_effects false
 resetprop -n dolby.monospeaker false
+resetprop -n ro.atmos.music_stream false
 
 # restart
 if [ "$API" -ge 24 ]; then

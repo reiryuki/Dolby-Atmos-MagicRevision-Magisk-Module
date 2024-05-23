@@ -9,7 +9,7 @@
 - Global type soundfx
 
 ## Sources
-- Dolby Magic modified version MD2 Magisk Module by Little Monk
+- Dolby Magic MD2 Magisk Module by Little Monk
 - com.atmos classes: https://apkmirror.com com.dolby DAX1-1.9.3_r1 1 by HTC Corporation
 
 ## Screenshots

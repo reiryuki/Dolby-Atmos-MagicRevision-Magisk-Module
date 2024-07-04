@@ -132,7 +132,7 @@ check_audioserver
 }
 
 # check
-PROC=com.atmos
+PROC=`cat $MODPATH/package.txt`
 killall $PROC
 check_audioserver
 

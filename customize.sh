@@ -56,11 +56,6 @@ else
 fi
 ui_print " "
 
-# 32 bit
-if [ ! "$LIST32BIT" ]; then
-  abort "- This ROM doesn't support 32 bit library."
-fi
-
 # sdk
 NUM=17
 if [ "$API" -lt $NUM ]; then
@@ -74,6 +69,28 @@ fi
 
 # recovery
 mount_partitions_in_recovery
+
+# bit
+AUDIO64BIT=`grep linker64 /*/bin/hw/*audio*`
+if [ "$LIST32BIT" ]; then
+  if [ "$IS64BIT" == true ]; then
+    ui_print "- 64 bit architecture"
+    ui_print " "
+    ui_print "- 32 bit library support"
+    ui_print " "
+  else
+    ui_print "- 32 bit architecture"
+    rm -rf `find $MODPATH -type d -name *64*`
+    ui_print " "
+  fi
+  if [ "$AUDIO64BIT" ]; then
+    ui_print "! This module uses 32 bit audio service only"
+    ui_print "  But this ROM uses 64 bit audio service"
+    abort
+  fi
+else
+  abort "! This ROM doesn't support 32 bit library"
+fi
 
 # magisk
 magisk_setup

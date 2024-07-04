@@ -11,6 +11,7 @@
 ## Sources
 - Dolby Magic MD2 Magisk Module by Little Monk
 - https://apkmirror.com com.dolby DAX1-1.9.3_r1 by HTC Corporation
+- libmagiskpolicy.so: Kitsune Mask R65C33E4F
 
 ## Screenshots
 - https://t.me/androidryukimodsdiscussions/78576

@@ -17,7 +17,7 @@
 - https://t.me/androidryukimodsdiscussions/78576
 
 ## Requirements
-- 32 bit architecture or 64 bit architecture with 32 bit library support
+- 32 bit audio service (this also can be found in 64 bit ROM with 32 bit support, not only 32 bit ROM)
 - Android 4.2 and up
 - Magisk or KernelSU installed
 
@@ -48,9 +48,6 @@
 - Android 12.1 Nusantara ROM
 - Android 13 AOSP ROM, CrDroid ROM, & AlphaDroid ROM
 - Android 14 LineageOS ROM
-
-## Known Issues
-- Doesn't work in Pixel 6 Pro Android 13 stock ROM
 
 ## Credits and Contributors
 - https://t.me/viperatmos

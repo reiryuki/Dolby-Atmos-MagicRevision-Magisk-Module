@@ -1,8 +1,8 @@
 id=Atmos
 name=Dolby Atmos Magic Revision
-version=v3.8
-versionCode=38
+version=v3.9
+versionCode=39
 author=Rei Ryuki the Fixer
-description=An EQ global type soundfx ported by Little Monk reworked for any Android 4.2 and up. Powered by Dolby Surround (DS).
+description=An equalizer global type sound effect ported by Little Monk reworked for any Android 4.2 and up. Powered by Dolby Surround.
 
 

@@ -11,14 +11,15 @@
 ## Sources
 - Dolby Magic MD2 Magisk Module by Little Monk
 - https://apkmirror.com com.dolby DAX1-1.9.3_r1 by HTC Corporation
-- libmagiskpolicy.so: Kitsune Mask R65C33E4F
+- libmagiskpolicy.so: Kitsune Mask R6687BB53
 
 ## Screenshots
 - https://t.me/androidryukimodsdiscussions/78576
 
 ## Requirements
+- armeabi-v7a or arm64-v8a architecture
 - 32 bit audio service (this also can be found in 64 bit ROM with 32 bit support, not only 32 bit ROM)
-- Android 4.2 and up
+- Android 4.2 (SDK 17) and up
 - Magisk or KernelSU installed
 
 ## Installation Guide & Download Link
@@ -31,31 +32,24 @@
 - If you have sensors issue (fingerprint, proximity, gyroscope, etc), then READ Optionals bellow!
 
 ## Optionals
-- https://t.me/androidryukimodsdiscussions/2616
+- https://t.me/ryukinotes/8
 - Global: https://t.me/androidryukimodsdiscussions/60861
 - Stream: https://t.me/androidryukimodsdiscussions/26764
 
 ## Troubleshootings
-- https://t.me/androidryukimodsdiscussions/2617
+- https://t.me/ryukinotes/11
 - Global: https://t.me/androidryukimodsdiscussions/29836
 
 ## Support & Bug Report
 - https://t.me/androidryukimodsdiscussions/2618
 
-## Tested on
-- Android 10 CrDroid ROM
-- Android 11 DotOS ROM
-- Android 12 AncientOS ROM
-- Android 12.1 Nusantara ROM
-- Android 13 AOSP ROM, CrDroid ROM, & AlphaDroid ROM
-- Android 14 LineageOS ROM
-
 ## Credits and Contributors
+- @HuskyDG
 - https://t.me/viperatmos
 - https://t.me/androidryukimodsdiscussions
 - You can contribute ideas about this Magisk Module here: https://t.me/androidappsportdevelopment
 
 ## Sponsors
-- https://t.me/androidryukimodsdiscussions/2619
+- https://t.me/ryukinotes/25
 
 

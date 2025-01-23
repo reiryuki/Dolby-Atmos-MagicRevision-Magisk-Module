@@ -34,14 +34,14 @@
 ## Optionals
 - https://t.me/ryukinotes/8
 - Global: https://t.me/ryukinotes/35
-- Stream: https://t.me/androidryukimodsdiscussions/26764
+- Stream: https://t.me/ryukinotes/52
 
 ## Troubleshootings
 - https://t.me/ryukinotes/11
 - Global: https://t.me/ryukinotes/34
 
 ## Support & Bug Report
-- https://t.me/androidryukimodsdiscussions/2618
+- https://t.me/ryukinotes/54
 
 ## Credits and Contributors
 - @HuskyDG

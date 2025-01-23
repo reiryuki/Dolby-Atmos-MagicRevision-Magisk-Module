@@ -20,7 +20,8 @@ else
   SERVER=mediaserver
 fi
 killall $SERVER\
- android.hardware.audio@4.0-service-mediatek
+ android.hardware.audio@4.0-service-mediatek\
+ android.hardware.wifi@1.0-service-lazy
 #xkillall android.hardware.sensors@1.0-service
 
 # wait

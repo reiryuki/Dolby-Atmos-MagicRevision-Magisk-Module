@@ -1,0 +1,2 @@
+# prevent bootloop
+ro.control_privapp_permissions=log

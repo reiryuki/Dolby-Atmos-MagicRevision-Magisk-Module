@@ -11,14 +11,14 @@ ABI=`getprop ro.product.cpu.abi`
 
 # function
 permissive() {
-if [ "$SELINUX" == Enforcing ]; then
-  if ! setenforce 0; then
-    echo 0 > /sys/fs/selinux/enforce
-  fi
+if [ "`toybox cat $FILE`" = 1 ]; then
+  chmod 640 $FILE
+  chmod 440 $FILE2
+  echo 0 > $FILE
 fi
 }
 magisk_permissive() {
-if [ "$SELINUX" == Enforcing ]; then
+if [ "`toybox cat $FILE`" = 1 ]; then
   if [ -x "`command -v magiskpolicy`" ]; then
 	magiskpolicy --live "permissive *"
   else
@@ -37,11 +37,12 @@ fi
 }
 
 # selinux
-SELINUX=`getenforce`
-chmod 0755 $MODPATH/*/libmagiskpolicy.so
+FILE=/sys/fs/selinux/enforce
+FILE2=/sys/fs/selinux/policy
 #1permissive
+chmod 0755 $MODPATH/*/libmagiskpolicy.so
 #2magisk_permissive
-#kFILE=$MODPATH/sepolicy.rule
+FILE=$MODPATH/sepolicy.rule
 #ksepolicy_sh
 FILE=$MODPATH/sepolicy.pfsd
 sepolicy_sh
@@ -84,31 +85,41 @@ if [ "$API" -ge 26 ]; then
 fi
 
 # function
-mount_helper() {
-if [ -d /odm ]\
-&& [ "`realpath /odm/etc`" == /odm/etc ]; then
-  DIR=$MODPATH/system/odm
-  FILES=`find $DIR -type f -name $AUD`
-  for FILE in $FILES; do
-    DES=/odm`echo $FILE | sed "s|$DIR||g"`
+mount_odm() {
+DIR=$MODPATH/system/odm
+FILES=`find $DIR -type f -name $AUD`
+for FILE in $FILES; do
+  DES=/odm`echo $FILE | sed "s|$DIR||g"`
+  if [ -f $DES ]; then
     umount $DES
     mount -o bind $FILE $DES
-  done
-fi
-if [ -d /my_product ]; then
-  DIR=$MODPATH/system/my_product
-  FILES=`find $DIR -type f -name $AUD`
-  for FILE in $FILES; do
-    DES=/my_product`echo $FILE | sed "s|$DIR||g"`
+  fi
+done
+}
+mount_my_product() {
+DIR=$MODPATH/system/my_product
+FILES=`find $DIR -type f -name $AUD`
+for FILE in $FILES; do
+  DES=/my_product`echo $FILE | sed "s|$DIR||g"`
+  if [ -f $DES ]; then
     umount $DES
     mount -o bind $FILE $DES
-  done
-fi
+  fi
+done
 }
 
 # mount
-if ! grep -E 'delta|Delta|kitsune' /data/adb/magisk/util_functions.sh; then
-  mount_helper
+if [ -d /odm ] && [ "`realpath /odm/etc`" == /odm/etc ]\
+&& ! grep /odm /data/adb/magisk/magisk\
+&& ! grep /odm /data/adb/magisk/magisk64\
+&& ! grep /odm /data/adb/magisk/magisk32; then
+  mount_odm
+fi
+if [ -d /my_product ]\
+&& ! grep /my_product /data/adb/magisk/magisk\
+&& ! grep /my_product /data/adb/magisk/magisk64\
+&& ! grep /my_product /data/adb/magisk/magisk32; then
+  mount_my_product
 fi
 
 # cleaning

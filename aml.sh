@@ -44,6 +44,7 @@ sed -i 's|uuid removed||g' $MODAEC
 sed -i "/^        removed {/ {;N s/        removed {\n        }//}" $MODAEC
 sed -i 's|removed { }||g' $MODAEC
 sed -i 's|removed {}||g' $MODAEC
+sed -i '/^[[:space:]]*$/d' $MODAEC
 }
 remove_xml() {
 for RMV in $RMVS; do
@@ -63,6 +64,7 @@ sed -i 's|<effect name="removed" uuid="removed" library="removed" />||g' $MODAEX
 sed -i 's|<libsw library="removed" uuid="removed" />||g' $MODAEX
 sed -i 's|<libhw library="removed" uuid="removed" />||g' $MODAEX
 sed -i 's|<apply effect="removed" />||g' $MODAEX
+sed -i '/^[[:space:]]*$/d' $MODAEX
 }
 
 # store
@@ -171,7 +173,7 @@ for MODAEX in $MODAEXS; do
     sed -i "s|<apply effect=\"$RMV\" />||g" $MODAEX
   done
   if ! grep -q '<postprocess>' $MODAEX\
-  || grep -q '<!-- Audio post processor' $MODAEX; then
+  || grep -q 'Audio post processor configurations' $MODAEX; then
     sed -i '/<\/effects>/a\
     <postprocess>\
         <stream type="music">\
@@ -264,6 +266,10 @@ for MODAEX in $MODAEXS; do
       sed -i "/<postprocess>/a\        <stream type=\"music\">\n        <\/stream>" $MODAEX
     fi
   fi
+  sed -i 's|Audio post processor configurations|Ryuki Mod Edit|g' $MODAEX
+  sed -i 's|YunMang.Xiao@PSW.MM.Dolby|Ryuki Mod Edit|g' $MODAEX
+  sed -i 's|WuHao@MULTIMEDIA.AUDIOSERVER.EFFECT|Ryuki Mod Edit|g' $MODAEX
+  sed -i 's|heaton.zhong|Ryuki Mod Edit|g' $MODAEX
 done
 
 # patch audio effects

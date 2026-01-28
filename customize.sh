@@ -168,7 +168,7 @@ if ! echo "$ABILIST" | grep -q $NAME2; then
     abort
   fi
 fi
-if ! file /*/bin/hw/*hardware*audio* | grep -q 32-bit; then
+if ! file /*/bin/hw/*audio* | grep -q 32-bit; then
   ui_print "! This module uses 32 bit audio service only"
   ui_print "  But this ROM uses 64 bit audio service"
   abort
@@ -499,6 +499,7 @@ else
 fi
 
 # run
+MODSYSTEM=/system
 . $MODPATH/copy.sh
 . $MODPATH/.aml.sh
 

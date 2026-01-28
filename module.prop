@@ -1,7 +1,7 @@
 id=Atmos
 name=Dolby Atmos Magic Revision
-version=v4.4
-versionCode=44
+version=v4.5
+versionCode=45
 author=Rei Ryuki the Fixer
 description=Equalizer global type sound effect ported by Little Monk reworked for any armeabi-v7a or arm64-v8a architecture, Android 4.2 (SDK 17) and up. Powered by Dolby Surround.
 

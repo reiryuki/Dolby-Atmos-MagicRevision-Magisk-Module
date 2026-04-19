@@ -13,6 +13,48 @@
 - https://apkmirror.com com.dolby DAX1-1.9.3_r1 by HTC Corporation
 - libmagiskpolicy.so: Kitsune Mask R6687BB53
 
+## Changelog
+
+v4.6
+- Does not disable raw playback (You can use Audio Compatibility Patch Reborn Magisk Module instead)
+
+v4.5
+- Fix wrong target in latest KernelSU
+- Improve detections
+
+v4.4
+- Tidy up aml.sh
+- Exclude audioeffectshaptic.xml
+- Abort installation if fail to mount mirror system
+- Fix wrong file permissions in some ROMs
+
+v4.3
+- Improve /odm and /my_product support detection
+
+v4.2
+- Move apk to priv-app
+- Add Action button to clear apps caches
+- Fix architecture detection in some weird ROMs
+- Fix bug in uninstall.sh
+
+v4.1
+- Apply effect to patch and rerouting stream by default for game apps
+
+v4.0
+- Allow installation in Android Emulator
+- Fix architecture detection
+
+v3.9
+- Using hardwareaudio instead of audio* for AUDIO64BIT detection
+
+v3.8
+- Improve audio_effects.xml patch detection
+- Fix architecture detection
+
+v3.7
+- Fix conflict with modules_update while installing via recovery if Magisk installed
+- Fix MagiskHide & SUList
+
 ## Screenshots
 - https://t.me/androidryukimodsdiscussions/78576
 
@@ -24,7 +66,7 @@
 
 ## Installation Guide & Download Link
 - If you are using KernelSU, you need to disable Unmount Modules by Default in KernelSU app settings and install https://github.com/KernelSU-Modules-Repo/meta-overlayfs first
-- Install this module https://www.pling.com/p/1610004/ via Magisk app or Kitsune Mask app or KernelSU app or Apatch app or Recovery if Magisk or Kitsune Mask installed
+- Install this module via Magisk app or Kitsune Mask app or KernelSU app or Apatch app or Recovery if Magisk or Kitsune Mask installed
 - Install AML Magisk Module https://t.me/ryukinotes/34 only if using any other else audio mod module
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot afterwards

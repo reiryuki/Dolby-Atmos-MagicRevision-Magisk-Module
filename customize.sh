@@ -226,6 +226,7 @@ if [ "$BOOTMODE" == true ]; then
   done
 fi
 remove_sepolicy_rule
+rm -rf $MODPATH/image
 ui_print " "
 
 # function

@@ -15,6 +15,13 @@
 
 ## Changelog
 
+v4.8
+- Atmos.apk
+  - Saves state and profiles at UI changes
+  - Add audio_server_restarted intent filter
+- Removes conflicted weird modules
+- Remove hardware services restarts (You can use https://github.com/reiryuki/Hardware-Services-Restarter-Magisk-Module instead)
+
 v4.7
 - Support NoMount metamodule
 - Update libmagiskpolicy.so from Magisk (stable) 30.7 (30700)
@@ -53,10 +60,6 @@ v4.0
 v3.9
 - Using hardwareaudio instead of audio* for AUDIO64BIT detection
 
-v3.8
-- Improve audio_effects.xml patch detection
-- Fix architecture detection
-
 ## Screenshots
 https://t.me/androidryukimodsdiscussions/78576
 
@@ -68,15 +71,12 @@ https://t.me/androidryukimodsdiscussions/78576
 
 ## Installation Guide & Download Link
 - If you are using KernelSU, you need to disable Unmount Modules by Default in KernelSU app settings and install https://github.com/KernelSU-Modules-Repo/meta-overlayfs or https://github.com/KernelSU-Modules-Repo/magic_mount_rs or https://github.com/KernelSU-Modules-Repo/hybrid_mount or https://github.com/maxsteeel/nomount first depending on ROM compatibility
-- Install this module https://bicolink.com/supW via Magisk app or Kitsune Mask app or KernelSU app or Apatch app or Recovery if Magisk or Kitsune Mask installed
+- Install this module https://github.com/reiryuki/Dolby-Atmos-MagicRevision-Magisk-Module via Magisk app or Kitsune Mask app or KernelSU app or Apatch app or Recovery if Magisk or Kitsune Mask installed
 - Install AML Magisk Module https://t.me/ryukinotes/34 only if using any other else audio mod module
 - Reboot
 - If you are using KernelSU, you need to allow superuser list manually all package name listed in package.txt (and your home launcher app also) (enable show system apps) and reboot afterwards
 - If you are using SUList, you need to allow list manually your home launcher app (enable show system apps) and reboot afterwards
-- If you have sensors issue (fingerprint, proximity, gyroscope, etc), then READ Optionals bellow!
-
-## Download Tutorial
-https://t.me/ryukinotes/97
+- If you have WiFi and sensors issues (fingerprint, proximity, gyroscope, etc.), then install https://github.com/reiryuki/Hardware-Services-Restarter-Magisk-Module also
 
 ## Optionals
 - https://t.me/ryukinotes/8
@@ -95,7 +95,7 @@ https://t.me/ryukinotes/97
 - @HuskyDG
 - https://t.me/viperatmos
 - https://t.me/androidryukimodsdiscussions
-- You can contribute ideas about this Magisk Module here: https://t.me/androidappsportdevelopment
+- https://t.me/androidappsportdevelopment
 
 ## Sponsors
 https://t.me/ryukinotes/25

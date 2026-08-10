@@ -75,6 +75,15 @@ FILE=$MODPATH/sepolicy.rule
 FILE=$MODPATH/sepolicy.pfsd
 sepolicy_sh
 
+# conflict
+NAMES="ainur_narsil zyx_ainur_silmaril"
+for NAME in $NAMES; do
+  DIR=/data/adb/modules/$NAME
+  if [ -d $DIR ] && [ ! -f $DIR/remove ]; then
+    touch $DIR/remove
+  fi
+done
+
 # run
 . $MODPATH/copy.sh
 
@@ -100,11 +109,6 @@ if [ "$API" -ge 26 ]; then
     chown 0.2000 $DIR
   done
   chcon -R u:object_r:vendor_configs_file:s0 $MODPATH/system/odm/etc
-  FILES=`find $MODPATH$MODSYSTEM/vendor/lib* -type f`
-  for FILE in $FILES; do
-    chmod 0644 $FILE
-    chown 0.0 $FILE
-  done
   chcon -R u:object_r:vendor_file:s0 $MODPATH$MODSYSTEM/vendor
   chcon -R u:object_r:vendor_configs_file:s0 $MODPATH$MODSYSTEM/vendor/etc
   chcon -R u:object_r:vendor_configs_file:s0 $MODPATH$MODSYSTEM/vendor/odm/etc

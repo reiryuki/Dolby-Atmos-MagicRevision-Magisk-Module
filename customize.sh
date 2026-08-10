@@ -174,15 +174,14 @@ if ! file /*/bin/hw/*audio* | grep -q 32-bit; then
   abort
 fi
 
-# magisk
-magisk_setup
+# mirror
+mirror_setup
 
 # path
 SYSTEM=`realpath $MIRROR/system`
 VENDOR=`realpath $MIRROR/vendor`
 PRODUCT=`realpath $MIRROR/product`
 SYSTEM_EXT=`realpath $MIRROR/system_ext`
-ODM=`realpath $MIRROR/odm`
 MY_PRODUCT=`realpath $MIRROR/my_product`
 
 # sepolicy
@@ -473,14 +472,6 @@ fi
 FILE=$MODPATH/system/etc/dlb-default.xml
 sed -i 's|dvle=\[1\]|dvle=\[0\]|g' $FILE
 
-# fix sensor
-if [ "`grep_prop dolby.fix.sensor $OPTIONALS`" == 1 ]; then
-  ui_print "- Fixing sensors issue"
-  ui_print "  This causes bootloop in some ROMs"
-  sed -i 's|#x||g' $MODPATH/service.sh
-  ui_print " "
-fi
-
 # audio rotation
 FILE=$MODPATH/service.sh
 if [ "`grep_prop audio.rotation $OPTIONALS`" == 1 ]; then
@@ -498,12 +489,6 @@ MODSYSTEM=/system
 
 # unmount
 unmount_mirror
-
-
-
-
-
-
 
 
 

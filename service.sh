@@ -46,9 +46,7 @@ else
 fi
 killall $SERVER\
  android.hardware.audio@4.0-service-mediatek\
- android.hardware.audio.service\
- android.hardware.wifi@1.0-service-lazy
-#xkillall android.hardware.sensors@1.0-service
+ android.hardware.audio.service
 
 # wait
 until [ "`getprop sys.boot_completed`" == 1 ]; do
@@ -73,7 +71,7 @@ fi
 
 # allow
 PKG=com.atmos
-if appops get $PKG > /dev/null 2>&1; then
+if appops get $PKG >/dev/null 2>&1; then
   if [ "$API" -ge 30 ]; then
     appops set $PKG AUTO_REVOKE_PERMISSIONS_IF_UNUSED ignore
   fi
